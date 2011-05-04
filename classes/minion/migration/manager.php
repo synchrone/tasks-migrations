@@ -151,7 +151,8 @@ class Minion_Migration_Manager {
 
 			$instance = new $class($migration);
 
-			$db = $this->_get_db_instance($instance->get_database_connection());
+			//$db = $this->_get_db_instance($instance->get_database_connection());
+			$db = $this->_db;
 
 			try 
 			{

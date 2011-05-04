@@ -32,6 +32,10 @@
  *
  *   Note, only --migrate-up and --migrate-down can be used with --groups
  *
+ * --db_group=db_group
+ *
+ *   The Kohana database configuration to use to run the migrations
+ *
  * --dry-run
  *
  *  No value taken, if this is specified then instead of executing the SQL it 
@@ -52,6 +56,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected $_config = array(
 		'group',
+		'db_group',
 		'groups',
 		'migrate-up',
 		'migrate-down',
@@ -69,8 +74,9 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	{
 		$k_config = Kohana::config('minion/migration');
 
-		$groups  = Arr::get($config, 'group', Arr::get($config, 'groups', NULL));
-		$target  = Arr::get($config, 'migrate-to',  NULL);
+		$groups    = Arr::get($config, 'group', Arr::get($config, 'groups', NULL));
+		$target    = Arr::get($config, 'migrate-to',  NULL);
+		$db_group  = Arr::get($config, 'db_group',  NULL);
 
 		$dry_run = array_key_exists('dry-run',      $config);
 		$quiet   = array_key_exists('quiet',        $config);
@@ -91,7 +97,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 			}
 		}
 
-		$db        = Database::instance();
+		$db        = Database::instance($db_group);
 		$model     = new Model_Minion_Migration($db);
 
 		$model->ensure_table_exists();

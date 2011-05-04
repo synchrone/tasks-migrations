@@ -95,6 +95,10 @@ class Minion_Migration_Util {
 	 */
 	public static function get_class_from_migration($migration)
 	{
+		$log = Log::instance();
+		ob_start();
+		var_dump($migration);
+		$log->add(Log::INFO, ob_get_clean());
 		if (is_string($migration))
 		{
 			$migration = str_replace(array(':', '/'), ' ', $migration);
