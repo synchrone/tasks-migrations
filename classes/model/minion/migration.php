@@ -227,7 +227,7 @@ class Model_Minion_Migration extends Model
 	 */
 	protected function _select()
 	{
-		return DB::select('*', DB::expr('CONCAT(`group`, ":", CAST(`timestamp` AS CHAR)) AS `id`'))->from($this->_table);
+		return DB::select('*', DB::expr('CONCAT('.$this->_db->quote_column('group').', ":", CAST('.$this->_db->quote_column('timestamp').' AS CHAR)) AS id'))->from($this->_table);
 	}
 
 	/**
@@ -375,7 +375,7 @@ class Model_Minion_Migration extends Model
 				->order_by('timestamp', 'DESC'),
 				'temp_table'
 			))
-			->group_by('`group`')
+			->group_by(DB::expr($this->_db->quote_column('group')))
 			->execute($this->_db)
 			->as_array($key, $value);
 	}
@@ -389,7 +389,7 @@ class Model_Minion_Migration extends Model
 	{
 		return DB::select()
 			->from($this->_table)
-			->group_by('`group`')
+			->group_by(DB::expr($this->_db->quote_column('group')))
 			->execute($this->_db)
 			->as_array($group_as_key ? 'group' : NULL, 'group');
 	}
