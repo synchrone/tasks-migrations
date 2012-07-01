@@ -233,7 +233,7 @@ class Model_Minion_Migration extends Model
             case 'Database_PostgreSQL':
                 $query
                     ->select(DB::expr('"group" || \':\' || "timestamp"::text AS "id"'))
-                    ->select(DB::expr('RANK() OVER (PARTITION BY "group" ORDER BY "timestamp") as rank'))
+                    ->select(DB::expr('RANK() OVER (PARTITION BY "group" ORDER BY "timestamp" DESC) as rank'))
                 ;
             break;
 
