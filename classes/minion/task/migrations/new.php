@@ -34,10 +34,10 @@ class Minion_Task_Migrations_New extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-	protected $_config = array(
-		'group',
-		'description',
-		'location'
+	protected $_options = array(
+        'location'    => APPPATH,
+        'description' => '',
+        'group'       => NULL,
 	);
 
 	/**
@@ -45,7 +45,7 @@ class Minion_Task_Migrations_New extends Minion_Task
 	 *
 	 * @param array Configuration
 	 */
-	public function execute(array $config)
+	public function _execute(array $config)
 	{
 		try
 		{
@@ -61,13 +61,7 @@ class Minion_Task_Migrations_New extends Minion_Task
 
 	public function generate($config, $up = null, $down = null)
 	{
-		$defaults = array(
-			'location'    => APPPATH,
-			'description' => '',
-			'group'       => NULL,
-		);
-
-		$config = array_merge($defaults, $config);
+		$config = array_merge($this->_options, $config);
 
 		// Trim slashes in group
 		$config['group'] = trim($config['group'], '/');
@@ -87,19 +81,24 @@ class Minion_Task_Migrations_New extends Minion_Task
 		$file = $this->_generate_filename($location, $group, $time, $description);
 
 
-		$data = Kohana::FILE_SECURITY.View::factory('minion/task/migrations/new/template')
+		$data = Kohana::FILE_SECURITY."\n".View::factory('minion/task/migrations/new/template')
 			->set('class', $class)
 			->set('description', $description)
 			->set('up', $up)
 			->set('down', $down)
 			->render();
 
-		if ( ! is_dir(dirname($file)))
+        $dirname = dirname($file);
+		if ( ! is_dir($dirname))
 		{
-			mkdir(dirname($file), 0775, TRUE);
+			if (! mkdir($dirname, 0775, TRUE)){
+                throw new Kohana_Exception('Could not create migration group dir '.$dirname);
+            }
 		}
 
-		file_put_contents($file, $data);
+		if(!file_put_contents($file, $data)){
+            throw new Kohana_Exception('Could not write new migration to '.$file);
+        }
 
 		return $file;
 	}

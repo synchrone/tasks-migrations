@@ -50,7 +50,7 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-	protected $_config = array(
+	protected $_options = array(
 		'group',
 		'groups',
 		'up',
@@ -65,9 +65,9 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 *
 	 * @param array Configuration to use
 	 */
-	public function execute(array $config)
+	public function _execute(array $config)
 	{
-		$k_config = Kohana::config('minion/migration');
+		//$k_config = Kohana::$config->load('minion.migration');
 
 		$groups  = Arr::get($config, 'group', Arr::get($config, 'groups', NULL));
 		$target  = Arr::get($config, 'to',  NULL);
