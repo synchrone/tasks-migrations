@@ -192,8 +192,7 @@ class Model_Minion_Migration extends Model
 			{
 				continue;
 			}
-
-			$groups[$migration['group']] = NULL;
+			$groups[$migration['group']]['count_available']++;
 		}
 
 		return $groups;
@@ -389,9 +388,8 @@ class Model_Minion_Migration extends Model
 	 */
 	public function fetch_current_versions($key = 'group', $value = NULL)
 	{
-		// Little hack needed to do an order by before a group by
-		return DB::select()
-            ->from(array($this->_table,'mm'))
+		return DB::select('*')->from(array($this->_table,'mm'))
+
             ->join(array(
 				$this->_select()
 				->where('applied', '>', 0)
@@ -400,6 +398,18 @@ class Model_Minion_Migration extends Model
 			))->on('mm.group','=','ids.group')
               ->on('mm.timestamp','=','ids.timestamp')
               ->on('ids.rank','=',DB::expr('1'))
+
+            ->select(array(DB::expr('CASE WHEN count_available IS NULL THEN 0 ELSE count_available END'),'count_available'))
+            ->join(array(
+                DB::select(DB::expr('CASE WHEN count(0) IS NULL THEN 0 ELSE count(0) END as count_available'),
+                        array('group','cnt_group'))
+                    ->from($this->_table)
+                    ->where('applied','=',0)
+                    ->group_by('group'),
+                'cnt'
+            ),'LEFT')
+                ->on('cnt.cnt_group','=','mm.group')
+
 			->execute($this->_db)
 			->as_array($key, $value);
 	}

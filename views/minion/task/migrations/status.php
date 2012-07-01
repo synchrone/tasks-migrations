@@ -1,4 +1,8 @@
 <?php foreach($groups as $group => $status): ?>
- * <?php echo $group ?> <?php echo ($status !== NULL ? $status['timestamp'].' '.( !empty($status['description']) ? '('.$status['description'].')' : '' ) : 'Not installed'); ?>
+ >> <?php echo $group?>
+
+    Current version: <?php printf('%s (%d)',Date::formatted_time($status['timestamp']), $status['timestamp'])?> <?php echo $status['description']?>
+
+    Available migrations: <?php echo $status['count_available']?>
 
 <?php endforeach; ?>
