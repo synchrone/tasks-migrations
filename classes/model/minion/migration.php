@@ -226,7 +226,30 @@ class Model_Minion_Migration extends Model
 	 */
 	protected function _select()
 	{
-		return DB::select('*', DB::expr('CONCAT(`group`, ":", CAST(`timestamp` AS CHAR)) AS `id`'))->from($this->_table);
+        /** @var $query Database_Query_Builder_Select */
+        $query = DB::select('*')->from($this->_table);
+        switch(get_class($this->_db))
+        {
+            case 'Database_PostgreSQL':
+                $query
+                    ->select(DB::expr('"group" || \':\' || "timestamp"::text AS "id"'))
+                    ->select(DB::expr('RANK() OVER (PARTITION BY "group" ORDER BY "timestamp") as rank'))
+                ;
+            break;
+
+            default:
+                $query //TODO: test this
+                    ->select(DB::expr('CONCAT(`group`, ":", CAST(`timestamp` AS CHAR)) AS `id`'))
+                    //horrible RANK() emulation
+                    ->select(DB::expr('IF(@group = `group`,@rank :=@rank+1,@rank :=1) as rank'))
+                    ->select(DB::expr('@group := `group`'))
+                    ->from("(select @rank:=0, @group:='') r")
+                    ->order_by('group','DESC')
+                ;
+            break;
+        }
+
+        return $query;
 	}
 
 	/**
@@ -368,13 +391,15 @@ class Model_Minion_Migration extends Model
 	{
 		// Little hack needed to do an order by before a group by
 		return DB::select()
-			->from(array(
+            ->from(array($this->_table,'mm'))
+            ->join(array(
 				$this->_select()
 				->where('applied', '>', 0)
 				->order_by('timestamp', 'DESC'),
-				'temp_table'
-			))
-			->group_by('group')
+				'ids'
+			))->on('mm.group','=','ids.group')
+              ->on('mm.timestamp','=','ids.timestamp')
+              ->on('ids.rank','=',DB::expr('1'))
 			->execute($this->_db)
 			->as_array($key, $value);
 	}
@@ -386,7 +411,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function fetch_groups($group_as_key = FALSE)
 	{
-		return DB::select()
+		return DB::select('group')
 			->from($this->_table)
 			->group_by('group')
 			->execute($this->_db)
