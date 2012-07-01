@@ -44,6 +44,13 @@ abstract class Minion_Migration_Base {
 		return Database::$default;
 	}
 
+    public function abortIf($condition, $message = ''){
+        $message = (strlen($message)) ? $message : 'Unknown Reason';
+
+        if ($condition === true) {
+            throw new Kohana_Exception($message);
+        }
+    }
 	/**
 	 * Runs any SQL queries necessary to bring the database up a migration version
 	 *
