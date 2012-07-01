@@ -7,7 +7,4 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-class Task_Migrations_Status extends Minion_Task_Migrations_Status
-{
-
-}
+class Task_Migrations_Status extends Minion_Task_Migrations_Status{}

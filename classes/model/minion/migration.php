@@ -185,6 +185,7 @@ class Model_Minion_Migration extends Model
 		// Start out using all the installed groups
 		$groups = $this->fetch_current_versions('group');
 		$available = $this->available_migrations();
+        $fs_migrations = array();
 
 		foreach ($available as $migration)
 		{
@@ -192,8 +193,11 @@ class Model_Minion_Migration extends Model
 			{
 				continue;
 			}
-			$groups[$migration['group']]['count_available']++;
+            $fs_migrations[$migration['group']]++;
 		}
+        foreach($fs_migrations as $group=>$count){
+            $groups[$group]['count_available'] += $count;
+        }
 
 		return $groups;
 	}
