@@ -166,11 +166,10 @@ class Model_Minion_Migration extends Model
 	 */
 	public function ensure_table_exists()
 	{
-		$query = $this->_db->query(Database::SELECT, "SHOW TABLES like '".$this->_table."'");
-
+        $query = $this->_db->list_tables($this->_table);
 		if ( ! count($query))
 		{
-			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', 'sql'));
+			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', $this->get_sqldump_ext()));
 
 			$this->_db->query(NULL, $sql);
 		}
@@ -570,4 +569,8 @@ class Model_Minion_Migration extends Model
 
 		return array((string) $results->get('timestamp'), $up);
 	}
+
+    public function get_sqldump_ext(){
+        return strtolower(substr(get_class($this->_db),9));
+    }
 }
