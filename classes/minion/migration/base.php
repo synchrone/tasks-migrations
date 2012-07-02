@@ -48,7 +48,7 @@ abstract class Minion_Migration_Base {
         $message = (strlen($message)) ? $message : 'Unknown Reason';
 
         if ($condition === true) {
-            throw new Kohana_Exception($message);
+            throw new Minion_Migration_Exception($message,$this->_info);
         }
     }
 	/**

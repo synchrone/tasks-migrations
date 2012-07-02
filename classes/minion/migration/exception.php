@@ -3,7 +3,7 @@
 /**
  * Minion exception, thrown during a migration error
  */
-class Minion_Migration_Exception extends Kohana_Exception {
+class Minion_Migration_Exception extends Minion_Exception {
 
 	protected $_migration = array();
 
@@ -30,4 +30,11 @@ class Minion_Migration_Exception extends Kohana_Exception {
 	{
 		return $this->_migration;
 	}
+    public function format_for_cli()
+   	{
+   		return View::factory('minion/task/migrations/run/exception')
+   						->set('migration', $this->get_migration())
+   						->set('error',     $this->getMessage())
+               .PHP_EOL;
+   	}
 }

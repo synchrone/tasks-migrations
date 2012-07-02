@@ -101,21 +101,9 @@ class Minion_Task_Migrations_Run extends Minion_Task
 		$manager
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
-			->set_dry_run($dry_run);
+			->set_dry_run($dry_run)
+            ->run_migration($groups, $target);
 
-		try
-		{
-			// Run migrations for specified groups & versions
-			$manager->run_migration($groups, $target);
-		}
-		catch(Minion_Migration_Exception $e)
-		{
-			echo View::factory('minion/task/migrations/run/exception')
-				->set('migration', $e->get_migration())
-				->set('error',     $e->getMessage());
-
-			throw $e;
-		}
 
 		$view = View::factory('minion/task/migrations/run')
 			->set('dry_run', $dry_run)
