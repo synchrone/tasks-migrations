@@ -158,9 +158,10 @@ class Minion_Migration_Manager {
 
 			include_once $file;
 
+            /** @var $instance Minion_Migration_Base */
 			$instance = new $class($migration);
 
-			$db = $this->_get_db_instance($instance->get_database_connection());
+			$db = $this->_dry_run ? Minion_Migration_Database::faux_instance() : $this->_db;
 
 			try
 			{

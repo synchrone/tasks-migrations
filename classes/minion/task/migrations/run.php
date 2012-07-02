@@ -15,9 +15,9 @@
  *
  *   Migrate the group(s) up
  *
- * --to=(timestamp|+up_migrations|down_migrations)
+ * --to=($timestamp|+$up_migrations|-$down_migrations)
  *
- *   Migrate to a specific timestamp, or up $up_migrations, or down $down_migrations
+ *   Migrate to a specific $timestamp, or up $up_migrations, or down $down_migrations
  *
  *   Cannot be used with --groups, must be used with --group
  *
@@ -42,6 +42,10 @@
  *  Suppress all unnecessary output.  If --dry-run is enabled then only dry run
  *  SQL will be output
  *
+ * --db-group
+ *
+ * Use this database config group
+ *
  * @author Matt Button <matthew@sigswitch.com>
  */
 class Minion_Task_Migrations_Run extends Minion_Task
@@ -57,7 +61,8 @@ class Minion_Task_Migrations_Run extends Minion_Task
 		'down',
 		'to',
 		'dry-run',
-		'quiet'
+		'quiet',
+        'db-group'
 	);
 
 	/**
@@ -91,7 +96,7 @@ class Minion_Task_Migrations_Run extends Minion_Task
 			}
 		}
 
-		$db        = Database::instance();
+		$db        = Database::instance($config['db-group']);
 		$model     = new Model_Minion_Migration($db);
 
 		$model->ensure_table_exists();
