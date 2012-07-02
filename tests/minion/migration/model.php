@@ -15,12 +15,14 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	 */
 	public static function setUpBeforeClass()
 	{
-		$sql = file_get_contents(Kohana::find_file('', 'minion_schema', 'sql'));
+        $db = Database::instance();
+        $schema_ext = strtolower(substr(get_class($db),9));
 
-		$sql = str_replace('`minion_migrations`', '`test_minion_migrations`', $sql);
+		$sql = file_get_contents(Kohana::find_file('', 'minion_schema', $schema_ext));
+		$sql = str_replace('minion_migrations', 'test_minion_migrations', $sql);
 
-		Database::instance()->query(NULL, 'DROP TABLE IF EXISTS `test_minion_migrations`');
-		Database::instance()->query(NULL, $sql);
+        $db->query(NULL, 'DROP TABLE IF EXISTS '.$db->quote_table('test_minion_migrations'));
+        $db->query(NULL, $sql);
 	}
 
 	/**
@@ -28,7 +30,8 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	 */
 	public static function tearDownAfterClass()
 	{
-		Database::instance()->query(NULL, 'DROP TABLE `test_minion_migrations`');
+        $db = Database::instance();
+        $db->query(NULL, 'DROP TABLE '.$db->quote_table('test_minion_migrations'));
 	}
 
 	/**
@@ -513,11 +516,11 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 					'migrations/myapp' => array(
 						// This file should be ignored
 						'migrations/myapp/015151051_setup.sql'
-							=> '/var/www/app/groups/myapp/migrations/myapp/015151051_setup.sql',
+							=> APPPATH.'migrations/myapp/015151051_setup.sql',
 						'migrations/myapp/015151051_setup.php'
-							=> '/var/www/app/groups/myapp/migrations/myapp/015151051_setup.php',
+							=> APPPATH.'migrations/myapp/015151051_setup.php',
 						'migrations/myapp/015161051_add-comments.php'
-							=> '/var/www/app/groups/myapp/migrations/myapp/015161051_add-comments.php',
+							=> APPPATH.'migrations/myapp/015161051_add-comments.php',
   					),
 				)
 			),
