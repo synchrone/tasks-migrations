@@ -6,6 +6,7 @@
  * Available config options are:
  *
  * --db-group
+ * Use this database config group
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
