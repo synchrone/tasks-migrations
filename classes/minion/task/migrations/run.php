@@ -74,7 +74,11 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	{
 		$k_config = Kohana::$config->load('minion/migration');
 
-		$groups  = Arr::get($config, 'group', Arr::get($config, 'groups', NULL));
+		$groups  = Arr::get($config, 'group', //try and get --group option
+            Arr::get($config, 'groups', //if not then --groups
+                $k_config->default_group)); //in case nothing specified - default group
+
+        $groups  = $this->_parse_groups($groups);
 		$target  = Arr::get($config, 'to',  NULL);
 
 		$dry_run = array_key_exists('dry-run',      $config);
@@ -82,7 +86,7 @@ class Minion_Task_Migrations_Run extends Minion_Task
 		$up      = array_key_exists('up',   $config);
 		$down    = array_key_exists('down', $config);
 
-		$groups  = $this->_parse_groups($groups);
+
 
 		if ($target === NULL)
 		{

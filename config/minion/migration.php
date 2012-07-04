@@ -2,6 +2,8 @@
 
 
 return array(
+    'default_group' => 'app',
+    
 	// A mapping of group_connections => db_connection to use
 	'group_connection' => array(
 		
