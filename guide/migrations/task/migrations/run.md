@@ -4,11 +4,11 @@
 
 To migrate your schema to the latest possible version run the command:
 
-	./minion db:migrate
+	./minion migrations:run
 
 This command is synonomous with 
 
-	./minion db:migrate --migrate-up
+	./minion migrations:run --up
 
 Which will run all migrations that haven't yet been applied to the schema, bringing it back in sync with the migrations in the filesystem.
 
@@ -16,20 +16,20 @@ Which will run all migrations that haven't yet been applied to the schema, bring
 
 To unapply all migrations (i.e. to delete all the tables in your schema) run this command:
 
-	./minion db:migrate --migrate-down
+	./minion migrations:run --down
 
 ## Going over there
 
-If you want to a specific version of your schema then you can use the `--migrate-to` switch, which accepts either a migration's timestamp or a relative pointer to a migration.
+If you want to a specific version of your schema then you can use the `--to` switch, which accepts either a migration's timestamp or a relative pointer to a migration.
 
 	// Migrate the schema 5 versions down
-	--migrate-to=-5
+	--to=-5
 
 	// Migrate the schema 10 versions up
-	--migrate-to=+5
+	--to=+10
 
 	// Migrate to a specific version
-	--migrate-to=201102190811
+	--to=201102190811
 
 ## Look before you leap
 
