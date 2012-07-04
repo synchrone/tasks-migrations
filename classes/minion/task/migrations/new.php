@@ -65,7 +65,7 @@ class Minion_Task_Migrations_New extends Minion_Task
 
         $config['group'] = $config['group'] !== null ?
             $config['group'] :
-            Kohana::$config->load('minion/migrations')->default_group;
+            Kohana::$config->load('minion/migration')->default_group;
 
 		// Trim slashes in group
 		$config['group'] = trim($config['group'], '/');
