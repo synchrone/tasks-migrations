@@ -18,6 +18,10 @@ class Minion_Task_Migrations_Status extends Minion_Task {
 	{
 		$db        = Database::instance();
 		$model     = new Model_Minion_Migration($db);
+		$model->ensure_table_exists();
+
+		$manager = new Minion_Migration_Manager($db, $model);
+		$manager->sync_migration_files();
 
 		$view = new View('minion/task/migrations/status');
 

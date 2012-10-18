@@ -166,8 +166,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function ensure_table_exists()
 	{
-		$query = $this->_db->query(Database::SELECT, "SHOW TABLES like '".$this->_table."'");
-
+		$query = $this->_db->list_tables($this->_table);
 		if ( ! count($query))
 		{
 			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', 'sql'));
