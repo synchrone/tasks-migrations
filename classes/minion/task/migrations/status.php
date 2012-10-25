@@ -13,7 +13,9 @@
 class Minion_Task_Migrations_Status extends Minion_Task {
 
     protected $_options = array(
-        'db-group' => null
+        'db-group' => null,
+        'format' => null,
+        'group' => null,
     );
 
 	/**
@@ -29,11 +31,15 @@ class Minion_Task_Migrations_Status extends Minion_Task {
 
         $manager = new Minion_Migration_Manager($db, $model);
         $manager->sync_migration_files();
+        $statuses = $model->get_group_statuses();
 
-		$view = new View('minion/task/migrations/status');
-
-		$view->groups = $model->get_group_statuses();
-
-		echo $view;
-	}
+        if($params['format'] == 'sh')
+        {
+            $group = Arr::get($params,'group',Kohana::$config->load('minion/migration.default_group'));
+            echo $statuses[$group]['count_available'];
+        }else{
+            echo View::factory('minion/task/migrations/status')
+                ->set('groups',$statuses);
+        }
+    }
 }
