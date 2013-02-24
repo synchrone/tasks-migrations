@@ -56,7 +56,6 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 */
 	protected $_options = array(
 		'group',
-		'groups',
 		'up',
 		'down',
 		'to',
@@ -70,37 +69,24 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 *
 	 * @param array Configuration to use
 	 */
-	public function _execute(array $config)
+	public function _execute(array $options)
 	{
-		$k_config = Kohana::$config->load('minion/migration');
+		$config = Kohana::$config->load('minion/migration');
 
-		$groups  = Arr::get($config, 'group', //try and get --group option
-            Arr::get($config, 'groups', //if not then --groups
-                $k_config->default_group)); //in case nothing specified - default group
+        $group = $this->_parse_groups(
+            Arr::get($options,'group',$config->default_group)
+        );
 
-        $groups  = $this->_parse_groups($groups);
-		$target  = Arr::get($config, 'to',  NULL);
+        $db_group = Arr::get($options,'db-group', $config->group_connection[$group[0]]);
 
-		$dry_run = array_key_exists('dry-run',      $config);
-		$quiet   = array_key_exists('quiet',        $config);
-		$up      = array_key_exists('up',   $config);
-		$down    = array_key_exists('down', $config);
+        $down    = array_key_exists('down', $options);
+		$target  = Arr::get($options, 'to',  !$down);
+
+		$dry_run = array_key_exists('dry-run',      $options);
+		$quiet   = array_key_exists('quiet',        $options);
 
 
-
-		if ($target === NULL)
-		{
-			if ($down)
-			{
-				$target = FALSE;
-			}
-			else
-			{
-				$target = TRUE;
-			}
-		}
-
-		$db        = Database::instance($config['db-group']);
+		$db        = Database::instance($db_group);
 		$model     = new Model_Minion_Migration($db);
 
 		$model->ensure_table_exists();
@@ -111,7 +97,7 @@ class Minion_Task_Migrations_Run extends Minion_Task
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
 			->set_dry_run($dry_run)
-            ->run_migration($groups, $target);
+            ->run_migration($group, $target);
 
 
 		$view = View::factory('minion/task/migrations/run')

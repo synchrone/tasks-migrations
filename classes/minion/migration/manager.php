@@ -115,15 +115,14 @@ class Minion_Migration_Manager {
 		return $this->_executed_migrations;
 	}
 
-	/**
-	 * Run migrations in the specified groups so as to reach specified targets
-	 *
-	 *
-	 *
-	 * @param  array   Set of groups to update, empty array means all
-	 * @param  array   Versions for specified groups
-	 * @return array   Array of all migrations that were successfully applied
-	 */
+    /**
+     * Run migrations in the specified groups so as to reach specified targets
+     * @param array $group Versions for specified groups
+     * @param bool $target
+     * @throws Kohana_Exception
+     * @throws Minion_Migration_Exception
+     * @return array   Array of all migrations that were successfully applied
+     */
 	public function run_migration($group = array(), $target = TRUE)
 	{
 		list($migrations, $is_up) = $this->_model->fetch_required_migrations($group, $target);
