@@ -32,6 +32,10 @@
  *
  *   Note, only --up and --down can be used with --groups
  *
+ * --db_group=db_group
+ *
+ *   The Kohana database configuration to use to run the migrations
+ *
  * --dry-run
  *
  *  No value taken, if this is specified then instead of executing the SQL it
