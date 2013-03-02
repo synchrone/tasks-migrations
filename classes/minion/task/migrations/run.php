@@ -81,7 +81,9 @@ class Minion_Task_Migrations_Run extends Minion_Task
             Arr::get($options,'group',$config->default_group)
         );
 
-        $db_group = Arr::get($options,'db-group', $config->group_connection[$group[0]]);
+        $db_group = Arr::get($options,'db-group',
+            Arr::get($config->group_connection,$group[0],null)
+        );
 
         $down    = array_key_exists('down', $options);
 		$target  = Arr::get($options, 'to',  !$down);
