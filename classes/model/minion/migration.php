@@ -268,8 +268,8 @@ class Model_Minion_Migration extends Model
 	 */
 	public function add_migration(array $migration)
 	{
-		DB::insert($this->_table, array('timestamp', '`group`', 'description'))
-			->values(array($migration['timestamp'], $migration['`group`'], $migration['description']))
+		DB::insert($this->_table, array('timestamp', 'group', 'description'))
+			->values(array($migration['timestamp'], $migration['group'], $migration['description']))
 			->execute($this->_db);
 
 		return $this;
@@ -395,20 +395,32 @@ class Model_Minion_Migration extends Model
 	 *
 	 * @return Kohana_Database_Result
 	 */
-	public function fetch_current_versions($key = 'group', $value = NULL)
-	{
-		return DB::select('*')->from(array($this->_table,'mm'))
-
+    public function fetch_current_versions($key = 'group', $value = NULL)
+    {
+        return DB::select('*')->from(array($this->_table,'mm'))
             ->join(array(
-				$this->_select()
-				->where('applied', '>', 0)
-				->order_by('timestamp', 'DESC'),
-				'temp_table'
-			))
-			->group_by('group')
-			->execute($this->_db)
-			->as_array($key, $value);
-	}
+                $this->_select()
+                ->where('applied', '>', 0)
+                ->order_by('timestamp', 'DESC'),
+                'ids'
+            ))->on('mm.group','=','ids.group')
+              ->on('mm.timestamp','=','ids.timestamp')
+              ->on('ids.rank','=',DB::expr('1'))
+
+            ->select(array(DB::expr('CASE WHEN count_available IS NULL THEN 0 ELSE count_available END'),'count_available'))
+            ->join(array(
+                DB::select(DB::expr('CASE WHEN count(0) IS NULL THEN 0 ELSE count(0) END as count_available'),
+                        array('group','cnt_group'))
+                    ->from($this->_table)
+                    ->where('applied','=',0)
+                    ->group_by('group'),
+                'cnt'
+            ),'LEFT')
+                ->on('cnt.cnt_group','=','mm.group')
+
+            ->execute($this->_db)
+            ->as_array($key, $value);
+    }
 
 	/**
 	 * Fetches a list of groups
