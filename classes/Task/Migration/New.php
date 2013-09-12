@@ -49,7 +49,7 @@ class Minion_Task_Migrations_New extends Minion_Task
 	{
 		try
 		{
-			$file = $this->generate($config);
+			$file = $this->generate($options);
 			Minion_CLI::write('Migration generated: '.$file);
 		}
 		catch(ErrorException $e)
@@ -68,7 +68,7 @@ class Minion_Task_Migrations_New extends Minion_Task
             Kohana::$config->load('minion/migration')->default_group;
 
 		// Trim slashes in group
-		$config['group'] = trim($config['group'], '/');
+        $config['group'] = trim($config['group'], '/');
 
 		if ( ! $this->_valid_group($config['group']))
 		{

@@ -59,13 +59,13 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 * @var array
 	 */
 	protected $_options = array(
-		'group',
-		'up',
-		'down',
-		'to',
-		'dry-run',
-		'quiet',
-        'db-group'
+		'group'   => NULL,
+		'groups'  => NULL,
+		'up'      => NULL,
+		'down'    => NULL,
+		'to'      => NULL,
+		'dry-run' => NULL,
+		'quiet'   => NULL,
 	);
 
 	/**
