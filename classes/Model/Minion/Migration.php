@@ -193,10 +193,13 @@ class Model_Minion_Migration extends Model
 			{
 				continue;
 			}
-            $fs_migrations[$migration['group']]++;
+            Arr::set_path($fs_migrations,$migration['group'],
+                Arr::path($fs_migrations,$migration['group'],0)+1
+            );
 		}
         foreach($fs_migrations as $group=>$count){
-            $groups[$group]['count_available'] += $count;
+            $pth = $group.'.count_available';
+            Arr::set_path($groups,$pth, Arr::path($groups,$pth,0)+1);
         }
 
 		return $groups;
