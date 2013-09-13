@@ -10,7 +10,7 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-class Minion_Task_Migrations_Status extends Minion_Task {
+class Task_Migrations_Status extends Minion_Task {
 
     protected $_options = array(
         'db-group' => null,

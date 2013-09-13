@@ -52,7 +52,7 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-class Minion_Task_Migrations_Run extends Minion_Task
+class Task_Migrations_Run extends Minion_Task
 {
 	/**
 	 * A set of config options that this task accepts
