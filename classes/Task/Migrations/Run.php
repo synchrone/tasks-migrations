@@ -58,15 +58,15 @@ class Task_Migrations_Run extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-	protected $_options = array(
-		'group'   => NULL,
-		'groups'  => NULL,
-		'up'      => NULL,
-		'down'    => NULL,
-		'to'      => NULL,
-		'dry-run' => NULL,
-		'quiet'   => NULL,
-	);
+    protected $_options = array(
+        'group',
+        'up',
+        'down',
+        'to',
+        'dry-run',
+        'quiet',
+        'db-group'
+    );
 
 	/**
 	 * Migrates the database to the version specified
