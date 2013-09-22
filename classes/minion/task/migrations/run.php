@@ -59,13 +59,12 @@ class Minion_Task_Migrations_Run extends Minion_Task
 	 * @var array
 	 */
 	protected $_options = array(
-		'group',
-		'up',
-		'down',
-		'to',
-		'dry-run',
-		'quiet',
-        'db-group'
+		'group' => null,
+		'down' => null,
+		'to' => null,
+		'dry-run' => null,
+		'quiet' => null,
+        'db-group' => null
 	);
 
 	/**
@@ -85,11 +84,11 @@ class Minion_Task_Migrations_Run extends Minion_Task
             Arr::get($config->group_connection,$group[0],null)
         );
 
-        $down    = array_key_exists('down', $options);
+        $down    = Arr::get($options, 'down', false);
 		$target  = Arr::get($options, 'to',  !$down);
 
-		$dry_run = array_key_exists('dry-run',      $options);
-		$quiet   = array_key_exists('quiet',        $options);
+		$dry_run = Arr::get($options, 'dry-run', false);
+		$quiet   = Arr::get($options, 'quiet', false);
 
 
 		$db        = Database::instance($db_group);
