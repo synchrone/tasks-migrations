@@ -12,11 +12,11 @@
  */
 class Task_Migrations_Status extends Minion_Task {
 
-    protected $_options = array(
-        'db-group' => null,
-        'format' => null,
-        'group' => null,
-    );
+	protected $_options = array(
+		'db-group' => null,
+		'format' => null,
+		'group' => null,
+	);
 
 	/**
 	 * Execute the task
@@ -27,19 +27,19 @@ class Task_Migrations_Status extends Minion_Task {
 	{
 		$db        = Database::instance($params['db-group']);
 		$model     = new Model_Minion_Migration($db);
-        $model->ensure_table_exists();
+		$model->ensure_table_exists();
 
-        $manager = new Minion_Migration_Manager($db, $model);
-        $manager->sync_migration_files();
-        $statuses = $model->get_group_statuses();
+		$manager = new Minion_Migration_Manager($db, $model);
+		$manager->sync_migration_files();
+		$statuses = $model->get_group_statuses();
 
-        if($params['format'] == 'sh')
-        {
-            $group = Arr::get($params,'group',Kohana::$config->load('minion/migration.default_group'));
-            echo $statuses[$group]['count_available'];
-        }else{
-            echo View::factory('minion/task/migrations/status')
-                ->set('groups',$statuses);
-        }
-    }
+		if($params['format'] == 'sh')
+		{
+			$group = Arr::get($params,'group',Kohana::$config->load('minion/migration.default_group'));
+			echo $statuses[$group]['count_available'];
+		}else{
+			echo View::factory('minion/task/migrations/status')
+				->set('groups',$statuses);
+		}
+	}
 }

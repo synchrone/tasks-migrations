@@ -58,15 +58,15 @@ class Task_Migrations_Run extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-    protected $_options = array(
-        'group',
-        'up',
-        'down',
-        'to',
-        'dry-run',
-        'quiet',
-        'db-group'
-    );
+	protected $_options = array(
+		'group',
+		'up',
+		'down',
+		'to',
+		'dry-run',
+		'quiet',
+		'db-group'
+	);
 
 	/**
 	 * Migrates the database to the version specified
@@ -77,15 +77,15 @@ class Task_Migrations_Run extends Minion_Task
 	{
 		$config = Kohana::$config->load('minion/migration');
 
-        $group = $this->_parse_groups(
-            Arr::get($options,'group',$config->default_group)
-        );
+		$group = $this->_parse_groups(
+			Arr::get($options,'group',$config->default_group)
+		);
 
-        $db_group = Arr::get($options,'db-group',
-            Arr::get($config->group_connection,$group[0],null)
-        );
+		$db_group = Arr::get($options,'db-group',
+			Arr::get($config->group_connection,$group[0],null)
+		);
 
-        $down    = array_key_exists('down', $options);
+		$down    = array_key_exists('down', $options);
 		$target  = Arr::get($options, 'to',  !$down);
 
 		$dry_run = array_key_exists('dry-run',      $options);
@@ -103,7 +103,7 @@ class Task_Migrations_Run extends Minion_Task
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
 			->set_dry_run($dry_run)
-            ->run_migration($group, $target);
+			->run_migration($group, $target);
 
 
 		$view = View::factory('minion/task/migrations/run')

@@ -3,7 +3,7 @@
 /**
  * The base migration class, must be extended by all migration files
  *
- * Each migration file must implement an up() and a down() which are used to 
+ * Each migration file must implement an up() and a down() which are used to
  * apply / remove this migration from the schema respectively
  *
  * @author Matt Button <matthew@sigswitch.com>
@@ -44,13 +44,13 @@ abstract class Minion_Migration_Base {
 		return Database::$default;
 	}
 
-    public function abortIf($condition, $message = ''){
-        $message = (strlen($message)) ? $message : 'Unknown Reason';
+	public function abortIf($condition, $message = ''){
+		$message = (strlen($message)) ? $message : 'Unknown Reason';
 
-        if ($condition === true) {
-            throw new Minion_Migration_Exception($message,$this->_info);
-        }
-    }
+		if ($condition === true) {
+			throw new Minion_Migration_Exception($message,$this->_info);
+		}
+	}
 	/**
 	 * Runs any SQL queries necessary to bring the database up a migration version
 	 *

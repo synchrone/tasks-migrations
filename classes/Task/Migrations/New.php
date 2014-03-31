@@ -35,9 +35,9 @@ class Task_Migrations_New extends Minion_Task
 	 * @var array
 	 */
 	protected $_options = array(
-        'location'    => APPPATH,
-        'description' => '',
-        'group'       => NULL,
+		'location'    => APPPATH,
+		'description' => '',
+		'group'       => NULL,
 	);
 
 	/**
@@ -63,12 +63,12 @@ class Task_Migrations_New extends Minion_Task
 	{
 		$config = array_merge($this->_options, $config);
 
-        $config['group'] = $config['group'] !== null ?
-            $config['group'] :
-            Kohana::$config->load('minion/migration')->default_group;
+		$config['group'] = $config['group'] !== null ?
+			$config['group'] :
+			Kohana::$config->load('minion/migration')->default_group;
 
 		// Trim slashes in group
-        $config['group'] = trim($config['group'], '/');
+		$config['group'] = trim($config['group'], '/');
 
 		if ( ! $this->_valid_group($config['group']))
 		{
@@ -93,17 +93,17 @@ class Task_Migrations_New extends Minion_Task
 			->set('down', $down)
 			->render();
 
-        $dirname = dirname($file);
+		$dirname = dirname($file);
 		if ( ! is_dir($dirname))
 		{
 			if (! mkdir($dirname, 0775, TRUE)){
-                throw new Kohana_Exception('Could not create migration group dir '.$dirname);
-            }
+				throw new Kohana_Exception('Could not create migration group dir '.$dirname);
+			}
 		}
 
 		if(!file_put_contents($file, $data)){
-            throw new Kohana_Exception('Could not write new migration to '.$file);
-        }
+			throw new Kohana_Exception('Could not write new migration to '.$file);
+		}
 
 		return $file;
 	}

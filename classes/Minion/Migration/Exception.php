@@ -30,11 +30,11 @@ class Minion_Migration_Exception extends Minion_Exception {
 	{
 		return $this->_migration;
 	}
-    public function format_for_cli()
-   	{
-   		return View::factory('minion/task/migrations/run/exception')
-   						->set('migration', $this->get_migration())
-   						->set('error',     $this->getMessage())
-               .PHP_EOL;
-   	}
+	public function format_for_cli()
+	{
+		return View::factory('minion/task/migrations/run/exception')
+						->set('migration', $this->get_migration())
+						->set('error',     $this->getMessage())
+			   .PHP_EOL;
+	}
 }

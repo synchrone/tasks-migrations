@@ -166,7 +166,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function ensure_table_exists()
 	{
-        $query = $this->_db->list_tables($this->_table);
+		$query = $this->_db->list_tables($this->_table);
 		if ( ! count($query))
 		{
 			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', $this->get_sqldump_ext()));
@@ -185,7 +185,7 @@ class Model_Minion_Migration extends Model
 		// Start out using all the installed groups
 		$groups = $this->fetch_current_versions('group');
 		$available = $this->available_migrations();
-        $fs_migrations = array();
+		$fs_migrations = array();
 
 		foreach ($available as $migration)
 		{
@@ -193,14 +193,14 @@ class Model_Minion_Migration extends Model
 			{
 				continue;
 			}
-            Arr::set_path($fs_migrations,$migration['group'],
-                Arr::path($fs_migrations,$migration['group'],0)+1
-            );
+			Arr::set_path($fs_migrations,$migration['group'],
+				Arr::path($fs_migrations,$migration['group'],0)+1
+			);
 		}
-        foreach($fs_migrations as $group=>$count){
-            $pth = $group.'.count_available';
-            Arr::set_path($groups,$pth, Arr::path($groups,$pth,0)+1);
-        }
+		foreach($fs_migrations as $group=>$count){
+			$pth = $group.'.count_available';
+			Arr::set_path($groups,$pth, Arr::path($groups,$pth,0)+1);
+		}
 
 		return $groups;
 	}
@@ -232,35 +232,35 @@ class Model_Minion_Migration extends Model
 	 */
 	protected function _select()
 	{
-        /** @var $query Database_Query_Builder_Select */
-        $query = DB::select('*')->from($this->_table);
-        switch(get_class($this->_db))
-        {
-            case 'Database_PostgreSQL':
-                $query
-                    ->select(DB::expr('"group" || \':\' || "timestamp"::text AS "id"'))
-                    ->select(DB::expr('RANK() OVER (PARTITION BY "group" ORDER BY "timestamp" DESC) as rank'))
-                ;
-            break;
+		/** @var $query Database_Query_Builder_Select */
+		$query = DB::select('*')->from($this->_table);
+		switch(get_class($this->_db))
+		{
+			case 'Database_PostgreSQL':
+				$query
+					->select(DB::expr('"group" || \':\' || "timestamp"::text AS "id"'))
+					->select(DB::expr('RANK() OVER (PARTITION BY "group" ORDER BY "timestamp" DESC) as rank'))
+				;
+			break;
 
-            default:
-                $select = sprintf('CONCAT(%s, ":", CAST(%s AS CHAR)) AS %s',
-                                            $this->_db->quote_column('group'),
-                                            $this->_db->quote_column('timestamp'),
-                                            $this->_db->quote_column('id')
-                                    );
-                $query //TODO: test this
-                    ->select(DB::expr($select))
-                    //horrible RANK() emulation
-                    ->select(DB::expr('IF(@group = `group`,@rank :=@rank+1,@rank :=1) as rank'))
-                    ->select(DB::expr('@group := `group`'))
-                    ->from("(select @rank:=0, @group:='') r")
-                    ->order_by('group','DESC')
-                ;
-            break;
-        }
+			default:
+				$select = sprintf('CONCAT(%s, ":", CAST(%s AS CHAR)) AS %s',
+											$this->_db->quote_column('group'),
+											$this->_db->quote_column('timestamp'),
+											$this->_db->quote_column('id')
+									);
+				$query //TODO: test this
+					->select(DB::expr($select))
+					//horrible RANK() emulation
+					->select(DB::expr('IF(@group = `group`,@rank :=@rank+1,@rank :=1) as rank'))
+					->select(DB::expr('@group := `group`'))
+					->from("(select @rank:=0, @group:='') r")
+					->order_by('group','DESC')
+				;
+			break;
+		}
 
-        return $query;
+		return $query;
 	}
 
 	/**
@@ -398,32 +398,32 @@ class Model_Minion_Migration extends Model
 	 *
 	 * @return Kohana_Database_Result
 	 */
-    public function fetch_current_versions($key = 'group', $value = NULL)
-    {
-        return DB::select('*')->from(array($this->_table,'mm'))
-            ->join(array(
-                $this->_select()
-                ->where('applied', '>', 0)
-                ->order_by('timestamp', 'DESC'),
-                'ids'
-            ))->on('mm.group','=','ids.group')
-              ->on('mm.timestamp','=','ids.timestamp')
-              ->on('ids.rank','=',DB::expr('1'))
+	public function fetch_current_versions($key = 'group', $value = NULL)
+	{
+		return DB::select('*')->from(array($this->_table,'mm'))
+			->join(array(
+				$this->_select()
+				->where('applied', '>', 0)
+				->order_by('timestamp', 'DESC'),
+				'ids'
+			))->on('mm.group','=','ids.group')
+			  ->on('mm.timestamp','=','ids.timestamp')
+			  ->on('ids.rank','=',DB::expr('1'))
 
-            ->select(array(DB::expr('CASE WHEN count_available IS NULL THEN 0 ELSE count_available END'),'count_available'))
-            ->join(array(
-                DB::select(DB::expr('CASE WHEN count(0) IS NULL THEN 0 ELSE count(0) END as count_available'),
-                        array('group','cnt_group'))
-                    ->from($this->_table)
-                    ->where('applied','=',0)
-                    ->group_by('group'),
-                'cnt'
-            ),'LEFT')
-                ->on('cnt.cnt_group','=','mm.group')
+			->select(array(DB::expr('CASE WHEN count_available IS NULL THEN 0 ELSE count_available END'),'count_available'))
+			->join(array(
+				DB::select(DB::expr('CASE WHEN count(0) IS NULL THEN 0 ELSE count(0) END as count_available'),
+						array('group','cnt_group'))
+					->from($this->_table)
+					->where('applied','=',0)
+					->group_by('group'),
+				'cnt'
+			),'LEFT')
+				->on('cnt.cnt_group','=','mm.group')
 
-            ->execute($this->_db)
-            ->as_array($key, $value);
-    }
+			->execute($this->_db)
+			->as_array($key, $value);
+	}
 
 	/**
 	 * Fetches a list of groups
@@ -616,7 +616,7 @@ class Model_Minion_Migration extends Model
 		return array((string) $results->get('timestamp'), $up);
 	}
 
-    public function get_sqldump_ext(){
-        return strtolower(substr(get_class($this->_db),9));
-    }
+	public function get_sqldump_ext(){
+		return strtolower(substr(get_class($this->_db),9));
+	}
 }
