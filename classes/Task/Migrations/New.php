@@ -45,7 +45,7 @@ class Task_Migrations_New extends Minion_Task
 	 *
 	 * @param array Configuration
 	 */
-	public function _execute(array $config)
+	public function _execute(array $options)
 	{
 		try
 		{
