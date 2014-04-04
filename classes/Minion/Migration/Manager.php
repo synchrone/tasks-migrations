@@ -115,14 +115,14 @@ class Minion_Migration_Manager {
 		return $this->_executed_migrations;
 	}
 
-    /**
-     * Run migrations in the specified groups so as to reach specified targets
-     * @param array $group Versions for specified groups
-     * @param bool $target
-     * @throws Kohana_Exception
-     * @throws Minion_Migration_Exception
-     * @return array   Array of all migrations that were successfully applied
-     */
+	/**
+	 * Run migrations in the specified groups so as to reach specified targets
+	 * @param array $group Versions for specified groups
+	 * @param bool $target
+	 * @throws Kohana_Exception
+	 * @throws Minion_Migration_Exception
+	 * @return array   Array of all migrations that were successfully applied
+	 */
 	public function run_migration($group = array(), $target = TRUE)
 	{
 		list($migrations, $is_up) = $this->_model->fetch_required_migrations($group, $target);
@@ -157,7 +157,7 @@ class Minion_Migration_Manager {
 
 			include_once $file;
 
-            /** @var $instance Minion_Migration_Base */
+			/** @var $instance Minion_Migration_Base */
 			$instance = new $class($migration);
 
 			$db = $this->_dry_run ? Minion_Migration_Database::faux_instance() : $this->_db;
